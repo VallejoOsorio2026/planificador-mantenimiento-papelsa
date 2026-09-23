@@ -21,7 +21,7 @@ export function EmptyState({
       <div className="mb-3 flex size-10 items-center justify-center rounded-xl border border-border bg-surface shadow-card">
         <Icon aria-hidden className="size-5 text-muted-foreground" />
       </div>
-      <p className="text-[13px] font-semibold text-foreground">{title}</p>
+      <p className="font-brand text-[14px] font-bold text-foreground">{title}</p>
       <p className="mt-1 max-w-64 text-[12px] leading-relaxed text-muted-foreground">{description}</p>
       {action ? <div className="mt-4">{action}</div> : null}
     </div>

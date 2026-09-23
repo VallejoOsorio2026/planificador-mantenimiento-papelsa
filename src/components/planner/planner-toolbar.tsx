@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarDays, ChevronLeft, ChevronRight, ClipboardPaste, Users, Wrench } from "lucide-react";
+import Image from "next/image";
+import { CalendarDays, ChevronLeft, ChevronRight, ClipboardPaste, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { formatWeekRange, isoWeekNumber } from "@/lib/dates";
@@ -36,14 +37,23 @@ export function PlannerToolbar({
   onOpenMechanics: () => void;
 }) {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border bg-surface px-4">
-      {/* Identidad */}
-      <div className="flex min-w-0 items-center gap-2.5">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary text-white shadow-xs">
-          <Wrench className="size-4" aria-hidden />
-        </span>
-        <div className="min-w-0 leading-tight">
-          <h1 className="truncate text-[13px] font-semibold tracking-[-0.01em] text-foreground">Planificador semanal</h1>
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-brand-green bg-surface px-3 whitespace-nowrap">
+      {/* Identidad PAPELSA: el PNG incluye el área de seguridad 2X; se sirve sin recomprimir */}
+      <div className="flex shrink-0 items-center gap-2.5">
+        <Image
+          src="/brand/papelsa-logo.png"
+          alt="PAPELSA"
+          width={997}
+          height={276}
+          loading="eager"
+          unoptimized
+          className="h-auto w-[116px] shrink-0 select-none"
+          draggable={false}
+        />
+        <div className="h-7 w-px shrink-0 bg-border max-[1365px]:hidden" aria-hidden />
+        {/* Por debajo de 1366 px el logo identifica la app y se libera ancho para la toolbar */}
+        <div className="leading-tight max-[1365px]:sr-only">
+          <h1 className="font-brand text-[13px] font-bold text-foreground">Planificador semanal</h1>
           <p className="truncate text-[11px] text-muted-foreground">Mantenimiento mecánico</p>
         </div>
         <DemoStatePopover value={demoState} onChange={onDemoStateChange} />

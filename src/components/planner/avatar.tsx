@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 const TONES = [
-  "bg-[#eeeefd] text-[#4b4cc4]",
+  "bg-brand-teal-2-soft text-primary",
   "bg-[#eaf4ff] text-[#1570cd]",
   "bg-[#e8f8f0] text-[#067647]",
   "bg-[#fef4e6] text-[#b54708]",

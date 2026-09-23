@@ -59,7 +59,7 @@ export function BacklogPanel({
     <aside aria-label="Backlog de órdenes" className="flex w-[296px] shrink-0 flex-col border-r border-border bg-surface">
       <div className="flex flex-col gap-3 border-b border-border px-4 pt-4 pb-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-[13px] font-semibold text-foreground">Backlog</h2>
+          <h2 className="font-brand text-[14px] font-bold text-foreground">Backlog</h2>
           <span className="rounded-full bg-surface-muted px-1.5 text-[11px] font-medium text-muted-foreground tabular-nums">
             {loading ? "–" : totalCount}
           </span>
