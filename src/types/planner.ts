@@ -60,3 +60,12 @@ export interface ChangeLogEntry {
   summary: string;
   orderNumber?: string;
 }
+
+/** Filtros de vista (solo cliente, no persistidos). */
+export interface PlannerFilters {
+  priorities: Priority[];
+  areas: string[];
+}
+
+/** Estado de demostración para revisar estados visuales en Fase 1. */
+export type DemoState = "datos" | "cargando" | "vacio";
