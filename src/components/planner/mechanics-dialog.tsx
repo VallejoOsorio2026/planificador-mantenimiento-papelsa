@@ -117,8 +117,9 @@ function MechanicsEditor() {
                   aria-label={`${m.name || "Nuevo mecánico"} activo`}
                 />
                 <Button
-                  variant="destructive"
+                  variant="ghost"
                   size="icon-sm"
+                  className="hover:bg-danger-soft hover:text-danger"
                   aria-label={`Quitar ${m.name || "nuevo mecánico"}`}
                   onClick={() => setRows((prev) => prev.filter((r) => r.id !== m.id))}
                 >

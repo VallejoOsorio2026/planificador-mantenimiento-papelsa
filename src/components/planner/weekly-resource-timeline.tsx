@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarX2, ClipboardPaste, Info } from "lucide-react";
+import { CalendarX2, ClipboardPaste, Clock, Info } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -47,7 +47,7 @@ export function WeeklyResourceTimeline({
   return (
     <section aria-label="Planificador semanal" className="flex min-w-0 flex-1 flex-col">
       {/* Resumen de semana */}
-      <div className="flex h-11 shrink-0 items-center gap-3 border-b border-border bg-surface px-4 text-[12px]">
+      <div className="flex h-11 shrink-0 items-center gap-3 overflow-hidden border-b border-border bg-surface px-4 text-[12px] whitespace-nowrap">
         {loading ? (
           <Skeleton className="h-3.5 w-56" />
         ) : (
@@ -65,9 +65,12 @@ export function WeeklyResourceTimeline({
             </span>
           </>
         )}
-        <span className="ml-auto flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          <Info className="size-3.5" aria-hidden />
-          T1 · T2 · T3 son turnos conceptuales — horarios por definir
+        <span
+          className="ml-auto flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground"
+          title="T1 · T2 · T3 son turnos conceptuales — horarios por definir"
+        >
+          <Info className="size-3.5 shrink-0" aria-hidden />
+          <span className="truncate">T1 · T2 · T3 son turnos conceptuales — horarios por definir</span>
         </span>
       </div>
 
@@ -90,8 +93,10 @@ export function WeeklyResourceTimeline({
                 role="columnheader"
                 className="sticky z-10 flex items-center justify-center border-r border-border bg-surface text-[10px] font-medium tracking-wide text-subtle-foreground uppercase"
                 style={{ left: MECHANIC_COL }}
+                title="Turno"
               >
-                Turno
+                <Clock className="size-3.5" aria-hidden />
+                <span className="sr-only">Turno</span>
               </div>
               {DAY_INDEXES.map((d) => {
                 const date = days[d];

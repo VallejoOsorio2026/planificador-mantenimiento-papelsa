@@ -42,18 +42,21 @@ export function MechanicRow({
         <div className="flex min-w-0 items-center gap-2.5">
           <Avatar name={mechanic.name} className={cn(!mechanic.active && "grayscale")} />
           <div className="min-w-0">
-            <p className={cn("truncate text-[13px] font-medium text-foreground", !mechanic.active && "text-muted-foreground")}>
+            <p
+              title={mechanic.name}
+              className={cn("truncate text-[13px] font-medium text-foreground", !mechanic.active && "text-muted-foreground")}
+            >
               {mechanic.name}
             </p>
             <p className="truncate text-[11px] text-muted-foreground">{mechanic.specialty}</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 pl-[42px] text-[11px] text-muted-foreground tabular-nums">
+        <div className="flex items-center gap-1.5 pl-[42px] text-[11px] whitespace-nowrap text-muted-foreground tabular-nums">
           {mechanic.active ? (
             <>
               <span>{assignments.length} OT</span>
               <span aria-hidden>·</span>
-              <span>{hours} h programadas</span>
+              <span title="Horas programadas en la semana">{hours} h</span>
             </>
           ) : (
             <span className="rounded border border-border bg-surface-muted px-1.5 font-medium">Inactivo</span>
