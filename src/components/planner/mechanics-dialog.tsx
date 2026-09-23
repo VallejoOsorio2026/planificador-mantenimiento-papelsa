@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Info, Plus, Trash2, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,8 @@ export function MechanicsDialog({ open, onOpenChange }: { open: boolean; onOpenC
 /** Estado local descartable: se reinicia cada vez que se abre el diálogo. */
 function MechanicsEditor() {
   const [rows, setRows] = useState<Mechanic[]>(MOCK_MECHANICS);
+  // Contador local para ids de filas nuevas (no depende de contexto seguro como crypto.randomUUID).
+  const nextNewId = useRef(1);
 
   function update(id: string, patch: Partial<Mechanic>) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -70,12 +72,10 @@ function MechanicsEditor() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() =>
-              setRows((prev) => [
-                ...prev,
-                { id: crypto.randomUUID(), name: "", specialty: "", active: true },
-              ])
-            }
+            onClick={() => {
+              const id = `nuevo-${nextNewId.current++}`;
+              setRows((prev) => [...prev, { id, name: "", specialty: "", active: true }]);
+            }}
           >
             <Plus />
             Agregar mecánico
