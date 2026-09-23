@@ -1,33 +1,49 @@
 @import "tailwindcss";
 
 /*
- * Sistema de diseño — Planificador Semanal de Mantenimiento (Fase 1).
+ * Sistema de diseño — Planificador Semanal de Mantenimiento.
+ * Fase 2A: identidad PAPELSA aplicada sobre los tokens de Fase 1.
  * Tokens centralizados: colores, tipografía, radios, sombras y movimiento.
  * Nombres compatibles con la convención de shadcn/ui.
  */
 
 :root {
+  /*
+   * Paleta corporativa PAPELSA (Manual de Marca, p.14). Únicos HEX de marca
+   * permitidos; el resto de tokens se deriva de ellos con color-mix.
+   */
+  --brand-teal: #006975; /* Pantone 2238 C — identidad principal */
+  --brand-green: #a9c23f; /* Pantone 2300 C — acento controlado */
+  --brand-teal-2: #4f868e; /* Pantone 5483 C — apoyo secundario */
+  --brand-graphite: #333333; /* Pantone 447 C */
+  --brand-gray: #6d6d6d; /* Pantone 4292 C */
+  --brand-gray-light: #bcbcbc; /* Pantone Gris Frío 4 C */
+  --brand-white: #ffffff;
+
   /* Superficies */
-  --background: #f6f7fb;
-  --surface: #ffffff;
-  --surface-muted: #f1f3f7;
-  --surface-hover: #f7f8fb;
+  --background: color-mix(in srgb, var(--brand-gray-light) 12%, var(--brand-white));
+  --surface: var(--brand-white);
+  --surface-muted: color-mix(in srgb, var(--brand-gray-light) 20%, var(--brand-white));
+  --surface-hover: color-mix(in srgb, var(--brand-gray-light) 8%, var(--brand-white));
 
   /* Texto */
-  --foreground: #171a21;
-  --muted-foreground: #667085;
-  --subtle-foreground: #98a2b3;
+  --foreground: var(--brand-graphite);
+  --muted-foreground: var(--brand-gray);
+  --subtle-foreground: color-mix(in srgb, var(--brand-gray) 94%, var(--brand-white)); /* ≈4.5:1 sobre blanco */
 
   /* Bordes */
-  --border: #e3e7ee;
-  --border-strong: #d0d5dd;
-  --input: #e3e7ee;
+  --border: color-mix(in srgb, var(--brand-gray-light) 45%, var(--brand-white));
+  --border-strong: var(--brand-gray-light);
+  --input: var(--border);
 
-  /* Marca y semánticos */
-  --primary: #5b5ce2;
-  --primary-hover: #4f50d6;
-  --primary-foreground: #ffffff;
-  --primary-soft: #eeeefd;
+  /* Marca */
+  --primary: var(--brand-teal);
+  --primary-hover: color-mix(in srgb, var(--brand-teal) 82%, var(--brand-graphite));
+  --primary-foreground: var(--brand-white);
+  --primary-soft: color-mix(in srgb, var(--brand-teal) 8%, var(--brand-white));
+  --brand-teal-2-soft: color-mix(in srgb, var(--brand-teal-2) 14%, var(--brand-white));
+
+  /* Semánticos operacionales: se conservan para no confundir estados con la marca */
   --info: #2e90fa;
   --info-soft: #eaf4ff;
   --success: #12b76a;
@@ -99,8 +115,15 @@
   --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-green: var(--brand-green);
+  --color-brand-teal-2: var(--brand-teal-2);
+  --color-brand-teal-2-soft: var(--brand-teal-2-soft);
+  --color-brand-graphite: var(--brand-graphite);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Comfortaa: identidad y encabezados. Futura queda pendiente de fuente licenciada. */
+  --font-brand: var(--font-comfortaa), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   --radius-sm: calc(var(--radius) - 4px); /* 6px */
