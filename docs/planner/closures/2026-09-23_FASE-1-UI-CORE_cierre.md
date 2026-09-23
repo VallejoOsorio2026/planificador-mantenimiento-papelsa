@@ -1,8 +1,8 @@
 # Cierre — Fase 1: Fundación + UI Core
 
-**Fecha:** 2026-09-23  
-**Estado:** CERRADO  
-**Proyecto:** Planificador Semanal de Mantenimiento  
+**Fecha:** 2026-09-23\
+**Estado:** CERRADO\
+**Proyecto:** Planificador Semanal de Mantenimiento\
 **Repositorio:** VallejoOsorio2026/planificador-mantenimiento-papelsa
 
 ## 1. Objetivo
@@ -145,7 +145,7 @@ HTTP mediante IP
 - sin persistencia;
 - comportamiento adecuado para datos mock.
 
-**Commit:** `71f3fe3a229c3533234332413f80444998b705e8`  
+**Commit:** `71f3fe3a229c3533234332413f80444998b705e8`\
 **Mensaje:** `fix(planner): avoid secure-context dependency for mechanic ids`
 
 **Validación:**
@@ -210,7 +210,7 @@ Resultado de la revalidación posterior a la corrección:
 
 El árbol del merge commit es idéntico al del head aprobado.
 
-**Main final:** `6a855a2008edfba869d5f6b8569cda1d2c5e530a`  
+**Main final:** `6a855a2008edfba869d5f6b8569cda1d2c5e530a`\
 **Working tree final:** limpio
 
 ## 11. Resultado observable
