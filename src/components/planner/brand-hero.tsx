@@ -77,7 +77,7 @@ export function BrandHero({ onClose }: { onClose: () => void }) {
       <div className="relative flex max-w-[880px] flex-col items-center px-6 text-center">
         <div className="relative">
           <div aria-hidden className="brand-hero-glow pointer-events-none absolute -inset-[140%] rounded-full" />
-          <PapelsaWindmill animate={!reduced} active={!leaving} className="w-[clamp(128px,23vh,200px)]" />
+          <PapelsaWindmill theme="dark" animate={!reduced} active={!leaving} className="w-[clamp(128px,23vh,200px)]" />
         </div>
 
         <p className="label-tech hero-reveal mt-10 text-muted-foreground" style={reveal(copy.start - 0.1)}>

@@ -9,9 +9,11 @@ import {
   createParticleField,
   drawParticles,
   easeOutCubic,
+  particlePalette,
   progress,
-  windVelocity,
+  windAngle,
 } from "@/lib/windmill-motion";
+import type { ThemeName } from "@/types/planner";
 
 const VB = PAPELSA_SYMBOL_VIEWBOX;
 const CX = VB.x + VB.width / 2;
@@ -20,17 +22,21 @@ const CY = VB.y + VB.height / 2;
 const CANVAS_FACTOR = WINDMILL_MOTION.particles.spawnRadius[1] * 2 + 0.2;
 
 /**
- * Símbolo PAPELSA (versión negativa oficial) que se ensambla desde partículas y
- * gira como un molinillo empujado por el viento.
+ * Símbolo PAPELSA que se ensambla desde partículas y gira como un molinillo
+ * empujado por el viento. Versión oficial según tema: negativa (p.17) en oscuro,
+ * principal a color (p.7) en claro. Cada ráfaga termina en la orientación oficial (0°).
  *
+ * - Cambiar `theme` solo cambia colores: no reinicia la animación ni el loop.
  * - `animate=false` (reduced motion): símbolo estático completo, sin lienzo ni giro.
  * - `active=false`: detiene todo el motion (al cerrar la bienvenida).
  */
 export function PapelsaWindmill({
+  theme,
   animate,
   active,
   className,
 }: {
+  theme: ThemeName;
   animate: boolean;
   active: boolean;
   className?: string;
@@ -40,6 +46,11 @@ export function PapelsaWindmill({
   const rotorRef = useRef<SVGGElement>(null);
   const pieceRefs = useRef<(SVGPathElement | null)[]>([]);
   const [particlesDone, setParticlesDone] = useState(false);
+  const paletteRef = useRef(particlePalette(theme));
+
+  useEffect(() => {
+    paletteRef.current = particlePalette(theme);
+  }, [theme]);
 
   useEffect(() => {
     const pieces = pieceRefs.current;
@@ -76,7 +87,6 @@ export function PapelsaWindmill({
 
     const { pieces: pc, particles } = WINDMILL_MOTION;
     let t = 0;
-    let angle = 0;
     let last = 0;
     let raf = 0;
     let particlesVisible = true;
@@ -85,6 +95,8 @@ export function PapelsaWindmill({
       const dt = last ? Math.min((now - last) / 1000, 1 / 20) : 0;
       last = now;
       t += dt;
+      // Ángulo como función pura del tiempo: fuera de una ráfaga es exactamente 0.
+      const angle = windAngle(t);
 
       // Partículas
       if (particlesVisible && ctx && field) {
@@ -92,7 +104,7 @@ export function PapelsaWindmill({
         ctx.clearRect(0, 0, canvasSide, canvasSide);
         ctx.translate(canvasSide / 2, canvasSide / 2);
         ctx.rotate((angle * Math.PI) / 180);
-        drawParticles(ctx, field, t);
+        drawParticles(ctx, field, t, paletteRef.current);
         if (t > particles.fadeOut[1]) {
           particlesVisible = false;
           field = null;
@@ -115,8 +127,8 @@ export function PapelsaWindmill({
       });
 
       // Giro de molinillo sobre el centro exacto del símbolo.
-      angle = (angle + windVelocity(t) * dt) % 360;
-      rotor.setAttribute("transform", `rotate(${angle} ${CX} ${CY})`);
+      rotor.setAttribute("transform", angle === 0 ? "" : `rotate(${angle} ${CX} ${CY})`);
+      rotor.dataset.angle = String(angle);
 
       raf = requestAnimationFrame(frame);
     };
@@ -157,7 +169,7 @@ export function PapelsaWindmill({
                 pieceRefs.current[i] = el;
               }}
               className="windmill-piece"
-              fill={piece.negative}
+              fill={theme === "light" ? piece.color : piece.negative}
               d={piece.d}
             />
           ))}

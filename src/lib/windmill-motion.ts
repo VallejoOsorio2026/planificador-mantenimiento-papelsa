@@ -1,3 +1,5 @@
+import type { ThemeName } from "@/types/planner";
+
 import { PAPELSA_SYMBOL_PIECES, PAPELSA_SYMBOL_VIEWBOX } from "./papelsa-symbol";
 
 /**
@@ -22,8 +24,8 @@ export const WINDMILL_MOTION = {
     swirlTurns: 0.3,
     /** Tamaño de partícula en px CSS. */
     size: [1, 2],
-    /** Reparto de color: color negativo de la pieza / verde PAPELSA / turquesa PAPELSA. */
-    mix: { negative: 0.55, green: 0.25, teal: 0.2 },
+    /** Reparto de color: color oficial de la pieza (según tema) / verde PAPELSA / turquesa PAPELSA. */
+    mix: { piece: 0.55, green: 0.25, teal: 0.2 },
   },
   pieces: {
     /** Las piezas oficiales se resuelven con un movimiento rígido (sin deformar). */
@@ -37,22 +39,21 @@ export const WINDMILL_MOTION = {
     duration: 0.6,
     ctaDelay: 0.75,
   },
+  /**
+   * Ráfagas: cada una recorre exactamente `turns` vueltas completas con un perfil
+   * de impulso + fricción y termina con velocidad y aceleración nulas, así que el
+   * símbolo siempre reposa en su orientación oficial (0°) sin salto final.
+   */
   gust: {
     start: 1.8,
-    /** Velocidad angular de la ráfaga principal, en °/s. */
-    amplitude: 1100,
-    rise: 0.15,
-    decay: 0.5,
+    duration: 1.6,
+    turns: 1,
   },
   idle: {
-    start: 2.8,
-    /** Giro residual casi imperceptible, en °/s. */
-    speed: 6,
-    /** Intervalos entre ráfagas suaves (ciclo fijo, sin aleatoriedad compleja). */
-    gustEvery: [6.5, 8, 7, 9],
-    amplitude: 110,
-    rise: 0.4,
-    decay: 1.1,
+    /** Separación entre inicios de ráfaga, ciclo fijo (sin aleatoriedad). */
+    gustEvery: [12, 15, 13, 16],
+    duration: 4,
+    turns: 1,
   },
   exit: 0.3,
 } as const;
@@ -64,27 +65,32 @@ export const progress = (t: number, [a, b]: Range) => clamp01((t - a) / (b - a))
 export const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
 export const easeInOutCubic = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - (-2 * p + 2) ** 3 / 2);
 
-/** Ráfaga de viento: sube rápido y se disipa por fricción. Devuelve °/s. */
-function gustVelocity(u: number, amplitude: number, rise: number, decay: number): number {
-  if (u <= 0) return 0;
-  return amplitude * (1 - Math.exp(-u / rise)) * Math.exp(-u / decay);
-}
+/**
+ * Avance normalizado de una ráfaga (0 → 1). Es la integral normalizada de la
+ * velocidad v(p) ∝ p·(1−p)³: arranque suave, pico hacia el 25 % (impulso) y
+ * fricción larga; en p = 1 velocidad y aceleración valen 0.
+ */
+export const gustProgress = (p: number) => {
+  const x = clamp01(p);
+  return x * x * (10 - 20 * x + 15 * x * x - 4 * x * x * x);
+};
 
-/** Velocidad angular del molinillo (°/s) en el instante `t` de la bienvenida. */
-export function windVelocity(t: number): number {
+/**
+ * Ángulo del molinillo (grados, 0 ≤ a < 360) en el instante `t` de la bienvenida.
+ * Función pura del tiempo: fuera de una ráfaga devuelve exactamente 0.
+ */
+export function windAngle(t: number): number {
   const { gust, idle } = WINDMILL_MOTION;
-  let v = gustVelocity(t - gust.start, gust.amplitude, gust.rise, gust.decay);
-  if (t > idle.start) {
-    v += idle.speed * easeOutCubic(clamp01(t - idle.start));
-    // Ráfagas suaves en un ciclo fijo de intervalos.
-    let at = idle.start;
-    for (let i = 0; at < t; i++) {
-      at += idle.gustEvery[i % idle.gustEvery.length];
-      const u = t - at;
-      if (u > 0 && u < idle.decay * 6) v += gustVelocity(u, idle.amplitude, idle.rise, idle.decay);
-    }
+  let start: number = gust.start;
+  let duration: number = gust.duration;
+  let turns: number = gust.turns;
+  for (let i = 0; t >= start + duration; i++) {
+    start += idle.gustEvery[i % idle.gustEvery.length];
+    duration = idle.duration;
+    turns = idle.turns;
   }
-  return v;
+  if (t <= start) return 0;
+  return (360 * turns * gustProgress((t - start) / duration)) % 360;
 }
 
 /** PRNG determinista (mulberry32) para que el ensamblaje sea igual en cada visita. */
@@ -98,10 +104,24 @@ function rng(seed: number) {
   };
 }
 
+/**
+ * Roles de color de las partículas: 0/1 = color oficial de cada tipo de pieza
+ * (negativo en oscuro, principal a color en claro), 2 = verde, 3 = turquesa.
+ */
+const PRIMARY_PIECE = PAPELSA_SYMBOL_PIECES[0];
+const SECONDARY_PIECE = PAPELSA_SYMBOL_PIECES[1];
+const GREEN = SECONDARY_PIECE.color;
+const TEAL = PRIMARY_PIECE.color;
+
+/** Paleta de partículas por tema, siempre con colores oficiales. */
+export function particlePalette(theme: ThemeName): readonly string[] {
+  return theme === "light"
+    ? [PRIMARY_PIECE.color, SECONDARY_PIECE.color, GREEN, TEAL]
+    : [PRIMARY_PIECE.negative, SECONDARY_PIECE.negative, GREEN, TEAL];
+}
+
 export type ParticleField = {
   count: number;
-  /** Colores usados por las partículas (índice en `color`). */
-  palette: string[];
   startR: Float32Array;
   startA: Float32Array;
   targetX: Float32Array;
@@ -125,14 +145,8 @@ export function createParticleField(side: number): ParticleField {
   const paths = PAPELSA_SYMBOL_PIECES.map((p) => new Path2D(p.d));
   const ctx = document.createElement("canvas").getContext("2d");
 
-  const teal = PAPELSA_SYMBOL_PIECES[0].color;
-  const green = PAPELSA_SYMBOL_PIECES[1].color;
-  const palette = [...new Set([...PAPELSA_SYMBOL_PIECES.map((p) => p.negative), green, teal])];
-  const colorIndex = (c: string) => palette.indexOf(c);
-
   const field: ParticleField = {
     count,
-    palette,
     startR: new Float32Array(count),
     startA: new Float32Array(count),
     targetX: new Float32Array(count),
@@ -164,12 +178,8 @@ export function createParticleField(side: number): ParticleField {
     field.size[i] = cfg.size[0] + rand() * (cfg.size[1] - cfg.size[0]);
 
     const r = rand();
-    field.color[i] =
-      r < cfg.mix.negative
-        ? colorIndex(PAPELSA_SYMBOL_PIECES[piece].negative)
-        : r < cfg.mix.negative + cfg.mix.green
-          ? colorIndex(green)
-          : colorIndex(teal);
+    const pieceRole = PAPELSA_SYMBOL_PIECES[piece].color === TEAL ? 0 : 1;
+    field.color[i] = r < cfg.mix.piece ? pieceRole : r < cfg.mix.piece + cfg.mix.green ? 2 : 3;
   }
   return field;
 }
@@ -178,7 +188,12 @@ export function createParticleField(side: number): ParticleField {
  * Dibuja el campo de partículas en el instante `t`. El contexto ya viene
  * trasladado al centro del símbolo. Sin asignaciones por frame.
  */
-export function drawParticles(ctx: CanvasRenderingContext2D, field: ParticleField, t: number) {
+export function drawParticles(
+  ctx: CanvasRenderingContext2D,
+  field: ParticleField,
+  t: number,
+  palette: readonly string[],
+) {
   const cfg = WINDMILL_MOTION.particles;
   const alpha = progress(t, cfg.fadeIn) * (1 - progress(t, cfg.fadeOut));
   if (alpha <= 0) return;
@@ -186,8 +201,8 @@ export function drawParticles(ctx: CanvasRenderingContext2D, field: ParticleFiel
   const [a0, a1] = cfg.assemble;
   const swirl = cfg.swirlTurns * Math.PI * 2;
 
-  for (let c = 0; c < field.palette.length; c++) {
-    ctx.fillStyle = field.palette[c];
+  for (let c = 0; c < palette.length; c++) {
+    ctx.fillStyle = palette[c];
     for (let i = 0; i < field.count; i++) {
       if (field.color[i] !== c) continue;
       const d = field.delay[i];
