@@ -13,7 +13,7 @@ const DialogClose = DialogPrimitive.Close;
 function DialogContent({ className, children, ...props }: DialogPrimitive.Popup.Props) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-brand-graphite/35 transition-opacity duration-[var(--duration-panel)] data-ending-style:opacity-0 data-starting-style:opacity-0" />
+      <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-surface-recessed/80 transition-opacity duration-[var(--duration-panel)] data-ending-style:opacity-0 data-starting-style:opacity-0" />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
@@ -25,7 +25,7 @@ function DialogContent({ className, children, ...props }: DialogPrimitive.Popup.
         {children}
         <DialogPrimitive.Close
           aria-label="Cerrar"
-          className="absolute top-4 right-4 inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors duration-[var(--duration-hover)] outline-none hover:bg-surface-muted hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-primary/25"
+          className="absolute top-4 right-4 inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors duration-[var(--duration-hover)] outline-none hover:bg-surface-muted hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/45"
         >
           <X className="size-4" />
         </DialogPrimitive.Close>
@@ -71,7 +71,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("font-brand text-[16px] font-bold text-foreground", className)}
+      className={cn("font-brand text-[16px] font-semibold text-foreground", className)}
       {...props}
     />
   );

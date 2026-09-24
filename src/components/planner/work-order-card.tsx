@@ -12,7 +12,7 @@ import { PriorityBadge, PriorityIcon } from "./priority";
 import { STATUS_ICON } from "./status";
 
 const cardBase =
-  "group relative w-full min-w-0 overflow-hidden rounded-lg border bg-surface text-left outline-none transition-[border-color,box-shadow,transform,opacity] duration-[var(--duration-hover)] hover:-translate-y-px hover:border-border-strong hover:shadow-raised focus-visible:ring-[3px] focus-visible:ring-primary/25";
+  "group relative w-full min-w-0 overflow-hidden rounded-lg border bg-surface text-left outline-none transition-[background-color,border-color,box-shadow,opacity] duration-[var(--duration-hover)] hover:border-border-strong hover:bg-surface-hover focus-visible:ring-[3px] focus-visible:ring-ring/45";
 
 /** Tarjeta compacta de una OT programada dentro de la grilla semanal. */
 export function WorkOrderCard({
@@ -47,7 +47,7 @@ export function WorkOrderCard({
       className={cn(
         cardBase,
         "scroll-mt-14 scroll-ml-[208px] scroll-mr-2 py-1.5 pr-2 pl-2.5 shadow-xs",
-        selected ? "border-primary shadow-raised ring-[3px] ring-primary/15" : "border-border",
+        selected ? "border-accent-live bg-surface-hover ring-2 ring-ring/25 hover:border-accent-live" : "border-border",
         dimmed && !selected && "opacity-35 hover:opacity-100",
       )}
     >
@@ -100,7 +100,7 @@ export function BacklogOrderCard({
       className={cn(
         cardBase,
         "block p-3 shadow-card",
-        selected ? "border-primary ring-[3px] ring-primary/15" : "border-border",
+        selected ? "border-accent-live bg-surface-hover ring-2 ring-ring/25 hover:border-accent-live" : "border-border",
       )}
     >
       <span className="flex items-center gap-2">

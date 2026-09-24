@@ -5,15 +5,15 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-[13px] font-medium select-none outline-none transition-[background-color,border-color,color,box-shadow] duration-[var(--duration-hover)] focus-visible:ring-[3px] focus-visible:ring-primary/25 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-[13px] font-medium select-none outline-none transition-[background-color,border-color,color,box-shadow] duration-[var(--duration-hover)] focus-visible:ring-[3px] focus-visible:ring-ring/45 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary-hover focus-visible:ring-primary/35",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary-hover focus-visible:ring-ring/45",
         outline:
           "border border-border bg-surface text-foreground shadow-xs hover:border-border-strong hover:bg-surface-hover",
-        secondary: "bg-surface-muted text-foreground hover:bg-border",
+        secondary: "bg-surface-muted text-foreground hover:bg-surface-hover",
         ghost: "text-muted-foreground hover:bg-surface-muted hover:text-foreground",
         destructive: "text-danger hover:bg-danger-soft",
       },

@@ -47,7 +47,7 @@ export function WeeklyResourceTimeline({
   return (
     <section aria-label="Planificador semanal" className="flex min-w-0 flex-1 flex-col">
       {/* Resumen de semana */}
-      <div className="flex h-11 shrink-0 items-center gap-3 overflow-hidden border-b border-border bg-surface px-4 text-[12px] whitespace-nowrap">
+      <div className="flex h-11 shrink-0 items-center gap-3 overflow-hidden border-b border-border bg-background px-4 text-[12px] whitespace-nowrap">
         {loading ? (
           <Skeleton className="h-3.5 w-56" />
         ) : (
@@ -76,16 +76,16 @@ export function WeeklyResourceTimeline({
 
       <div className="relative min-h-0 flex-1">
         <div className="scroll-thin absolute inset-0 overflow-auto">
-          <div role="grid" aria-busy={loading} style={{ minWidth: GRID_MIN_WIDTH }} className="bg-surface">
+          <div role="grid" aria-busy={loading} style={{ minWidth: GRID_MIN_WIDTH }} className="bg-background">
             {/* Cabecera de días */}
             <div
               role="row"
-              className="sticky top-0 z-20 grid border-b border-border bg-surface/95 backdrop-blur-sm"
+              className="sticky top-0 z-20 grid border-b border-border bg-surface"
               style={{ gridTemplateColumns: GRID_TEMPLATE }}
             >
               <div
                 role="columnheader"
-                className="sticky left-0 z-10 flex items-center border-r border-border bg-surface px-3 text-[11px] font-medium tracking-wide text-subtle-foreground uppercase"
+                className="label-tech sticky left-0 z-10 flex items-center border-r border-border bg-surface px-3"
               >
                 Mecánico
               </div>
@@ -117,13 +117,13 @@ export function WeeklyResourceTimeline({
                         <span
                           className={cn(
                             "flex size-7 items-center justify-center rounded-md text-[13px] font-semibold tabular-nums",
-                            isToday ? "bg-primary text-white" : "text-foreground",
+                            isToday ? "bg-primary text-white ring-1 ring-accent-live/70" : "text-foreground",
                           )}
                         >
                           {date.getDate()}
                         </span>
                         <span className="flex min-w-0 flex-col leading-tight">
-                          <span className={cn("text-[12px] font-medium", isToday ? "text-primary" : "text-foreground")}>
+                          <span className={cn("text-[12px] font-medium", isToday ? "text-primary-text" : "text-foreground")}>
                             {formatWeekday(date)}
                             {isToday ? <span className="ml-1 text-[11px] font-normal">· Hoy</span> : null}
                           </span>
@@ -159,7 +159,7 @@ export function WeeklyResourceTimeline({
 
         {!loading && (empty || !isCurrentWeek) && assignments.length === 0 ? (
           <div className="pointer-events-none absolute inset-0 top-12 flex items-center justify-center p-6">
-            <div className="pointer-events-auto animate-fade-in rounded-2xl border border-border bg-surface/95 shadow-overlay backdrop-blur-sm">
+            <div className="pointer-events-auto animate-fade-in rounded-2xl border border-border bg-surface">
               {empty ? (
                 <EmptyState
                   icon={ClipboardPaste}

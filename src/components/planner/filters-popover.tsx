@@ -57,7 +57,7 @@ export function FiltersPopover({
     <Popover>
       <PopoverTrigger
         render={
-          <Button variant="ghost" className={cn(active > 0 && "bg-primary-soft text-primary hover:bg-primary-soft")} />
+          <Button variant="ghost" className={cn(active > 0 && "bg-primary-soft text-primary-text hover:bg-primary-soft")} />
         }
       >
         <SlidersHorizontal />
@@ -75,7 +75,7 @@ export function FiltersPopover({
             type="button"
             disabled={active === 0}
             onClick={() => onChange({ priorities: [], areas: [] })}
-            className="rounded text-[12px] text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-primary/30 disabled:text-subtle-foreground disabled:no-underline"
+            className="rounded text-[12px] text-primary-text outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/45 disabled:text-subtle-foreground disabled:no-underline"
           >
             Limpiar
           </button>
