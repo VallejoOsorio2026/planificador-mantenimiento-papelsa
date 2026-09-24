@@ -8,6 +8,7 @@ import { PRIORITY_ORDER } from "@/lib/planner-config";
 import type { DemoState, PlannerFilters, WorkOrder } from "@/types/planner";
 
 import { BacklogPanel } from "./backlog-panel";
+import { BrandHero } from "./brand-hero";
 import { MechanicsDialog } from "./mechanics-dialog";
 import { OrderInspector } from "./order-inspector";
 import { PasteOrdersDialog } from "./paste-orders-dialog";
@@ -48,6 +49,8 @@ export function PlannerShell() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [pasteOpen, setPasteOpen] = useState(false);
   const [mechanicsOpen, setMechanicsOpen] = useState(false);
+  // Bienvenida beta: se muestra en cada carga (sin persistencia); `key` permite repetirla.
+  const [welcome, setWelcome] = useState({ open: true, key: 0 });
 
   const loading = today === null || demoState === "cargando";
   const empty = demoState === "vacio";
@@ -87,69 +90,75 @@ export function PlannerShell() {
   }
 
   const closeInspector = useCallback(() => setSelectedOrderId(null), []);
+  const closeWelcome = useCallback(() => setWelcome((w) => ({ ...w, open: false })), []);
   const toggleSelect = useCallback(
     (id: string) => setSelectedOrderId((current) => (current === id ? null : id)),
     [],
   );
 
   return (
-    <div className="flex h-dvh min-w-0 flex-col">
-      <PlannerToolbar
-        weekStart={weekStart}
-        isCurrentWeek={isCurrentWeek}
-        onPrevWeek={() => changeWeek(weekOffset - 1)}
-        onNextWeek={() => changeWeek(weekOffset + 1)}
-        onToday={() => changeWeek(0)}
-        filters={filters}
-        onFiltersChange={setFilters}
-        demoState={demoState}
-        onDemoStateChange={setDemoState}
-        onOpenPaste={() => setPasteOpen(true)}
-        onOpenMechanics={() => setMechanicsOpen(true)}
-      />
-
-      <div className="flex min-h-0 flex-1">
-        <BacklogPanel
-          orders={backlog}
-          totalCount={backlogAll.length}
-          loading={loading}
-          search={search}
-          onSearchChange={setSearch}
+    <>
+      <div className="flex h-dvh min-w-0 flex-col" inert={welcome.open}>
+        <PlannerToolbar
+          weekStart={weekStart}
+          isCurrentWeek={isCurrentWeek}
+          onPrevWeek={() => changeWeek(weekOffset - 1)}
+          onNextWeek={() => changeWeek(weekOffset + 1)}
+          onToday={() => changeWeek(0)}
           filters={filters}
           onFiltersChange={setFilters}
-          selectedOrderId={selectedOrderId}
-          onSelectOrder={toggleSelect}
+          demoState={demoState}
+          onDemoStateChange={setDemoState}
           onOpenPaste={() => setPasteOpen(true)}
+          onOpenMechanics={() => setMechanicsOpen(true)}
+          onReplayWelcome={() => setWelcome((w) => ({ open: true, key: w.key + 1 }))}
         />
 
-        <WeeklyResourceTimeline
-          weekStart={weekStart}
-          today={today}
-          mechanics={MOCK_MECHANICS}
-          assignments={assignments}
-          ordersById={ORDERS_BY_ID}
-          loading={loading}
-          empty={empty}
-          isCurrentWeek={isCurrentWeek}
-          selectedOrderId={selectedOrderId}
-          isDimmed={isDimmed}
-          onSelectOrder={toggleSelect}
-          onOpenPaste={() => setPasteOpen(true)}
-        />
-
-        {selectedOrder && !loading ? (
-          <OrderInspector
-            order={selectedOrder}
-            assignment={selectedAssignment}
-            mechanic={selectedMechanic}
-            weekStart={weekStart}
-            onClose={closeInspector}
+        <div className="flex min-h-0 flex-1">
+          <BacklogPanel
+            orders={backlog}
+            totalCount={backlogAll.length}
+            loading={loading}
+            search={search}
+            onSearchChange={setSearch}
+            filters={filters}
+            onFiltersChange={setFilters}
+            selectedOrderId={selectedOrderId}
+            onSelectOrder={toggleSelect}
+            onOpenPaste={() => setPasteOpen(true)}
           />
-        ) : null}
+
+          <WeeklyResourceTimeline
+            weekStart={weekStart}
+            today={today}
+            mechanics={MOCK_MECHANICS}
+            assignments={assignments}
+            ordersById={ORDERS_BY_ID}
+            loading={loading}
+            empty={empty}
+            isCurrentWeek={isCurrentWeek}
+            selectedOrderId={selectedOrderId}
+            isDimmed={isDimmed}
+            onSelectOrder={toggleSelect}
+            onOpenPaste={() => setPasteOpen(true)}
+          />
+
+          {selectedOrder && !loading ? (
+            <OrderInspector
+              order={selectedOrder}
+              assignment={selectedAssignment}
+              mechanic={selectedMechanic}
+              weekStart={weekStart}
+              onClose={closeInspector}
+            />
+          ) : null}
+        </div>
+
+        <PasteOrdersDialog open={pasteOpen} onOpenChange={setPasteOpen} />
+        <MechanicsDialog open={mechanicsOpen} onOpenChange={setMechanicsOpen} />
       </div>
 
-      <PasteOrdersDialog open={pasteOpen} onOpenChange={setPasteOpen} />
-      <MechanicsDialog open={mechanicsOpen} onOpenChange={setMechanicsOpen} />
-    </div>
+      {welcome.open ? <BrandHero key={welcome.key} onClose={closeWelcome} /> : null}
+    </>
   );
 }

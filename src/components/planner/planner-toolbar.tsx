@@ -23,6 +23,7 @@ export function PlannerToolbar({
   onDemoStateChange,
   onOpenPaste,
   onOpenMechanics,
+  onReplayWelcome,
 }: {
   weekStart: Date | null;
   isCurrentWeek: boolean;
@@ -35,28 +36,29 @@ export function PlannerToolbar({
   onDemoStateChange: (value: DemoState) => void;
   onOpenPaste: () => void;
   onOpenMechanics: () => void;
+  onReplayWelcome: () => void;
 }) {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-brand-green bg-surface px-3 whitespace-nowrap">
-      {/* Identidad PAPELSA: el PNG incluye el área de seguridad 2X; se sirve sin recomprimir */}
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-brand-green bg-background px-3 whitespace-nowrap">
+      {/* Identidad PAPELSA: logotipo negativo oficial (vector extraído del manual, p.17) */}
       <div className="flex shrink-0 items-center gap-2.5">
         <Image
-          src="/brand/papelsa-logo.png"
+          src="/brand/papelsa-logo-negative.svg"
           alt="PAPELSA"
-          width={997}
-          height={276}
+          width={170}
+          height={33}
           loading="eager"
           unoptimized
-          className="h-auto w-[116px] shrink-0 select-none"
+          className="mx-1 h-auto w-[106px] shrink-0 select-none"
           draggable={false}
         />
         <div className="h-7 w-px shrink-0 bg-border max-[1365px]:hidden" aria-hidden />
         {/* Por debajo de 1366 px el logo identifica la app y se libera ancho para la toolbar */}
         <div className="leading-tight max-[1365px]:sr-only">
-          <h1 className="font-brand text-[13px] font-bold text-foreground">Planificador semanal</h1>
+          <h1 className="font-brand text-[13px] font-semibold text-foreground">Planificador semanal</h1>
           <p className="truncate text-[11px] text-muted-foreground">Mantenimiento mecánico</p>
         </div>
-        <DemoStatePopover value={demoState} onChange={onDemoStateChange} />
+        <DemoStatePopover value={demoState} onChange={onDemoStateChange} onReplayWelcome={onReplayWelcome} />
       </div>
 
       <div className="mx-1 h-6 w-px bg-border" aria-hidden />
