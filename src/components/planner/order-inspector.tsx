@@ -177,7 +177,7 @@ function Muted({ children }: { children: React.ReactNode }) {
 function Section({ title, icon: Icon, children }: { title: string; icon?: LucideIcon; children: React.ReactNode }) {
   return (
     <section className="border-t border-border px-5 py-4">
-      <h3 className="mb-2.5 flex items-center gap-1.5 text-[12px] font-semibold text-foreground">
+      <h3 className="label-tech mb-2.5 flex items-center gap-1.5">
         {Icon ? <Icon className="size-3.5 text-muted-foreground" aria-hidden /> : null}
         {title}
       </h3>

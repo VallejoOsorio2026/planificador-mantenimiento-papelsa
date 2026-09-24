@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
 const TONES = [
-  "bg-[#eeeefd] text-[#4b4cc4]",
-  "bg-[#eaf4ff] text-[#1570cd]",
-  "bg-[#e8f8f0] text-[#067647]",
-  "bg-[#fef4e6] text-[#b54708]",
-  "bg-[#fdf0fa] text-[#a3238e]",
-  "bg-[#effaf9] text-[#0e7a70]",
+  "bg-brand-teal-2-soft text-primary-text",
+  "bg-info-soft text-info-text",
+  "bg-success-soft text-success-text",
+  "bg-warning-soft text-warning-text",
+  "bg-surface-muted text-foreground",
+  "bg-brand-green/15 text-emphasis-text",
 ];
 
 function initials(name: string): string {

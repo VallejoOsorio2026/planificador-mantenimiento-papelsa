@@ -1,41 +1,71 @@
 @import "tailwindcss";
 
 /*
- * Sistema de diseño — Planificador Semanal de Mantenimiento (Fase 1).
+ * Sistema de diseño — Planificador Semanal de Mantenimiento.
+ * Fase 2A (propuesta AUROS × PAPELSA): identidad PAPELSA en tema oscuro,
+ * con el lenguaje de superficies y motion de la referencia Auros.
  * Tokens centralizados: colores, tipografía, radios, sombras y movimiento.
  * Nombres compatibles con la convención de shadcn/ui.
  */
 
 :root {
-  /* Superficies */
-  --background: #f6f7fb;
-  --surface: #ffffff;
-  --surface-muted: #f1f3f7;
-  --surface-hover: #f7f8fb;
+  /*
+   * Paleta corporativa PAPELSA (Manual de Marca, p.14). Únicos HEX de marca
+   * permitidos; el resto de tokens se deriva de ellos con color-mix.
+   */
+  --brand-teal: #006975; /* Pantone 2238 C — identidad principal */
+  --brand-green: #a9c23f; /* Pantone 2300 C — acento controlado */
+  --brand-teal-2: #4f868e; /* Pantone 5483 C — apoyo secundario */
+  --brand-graphite: #333333; /* Pantone 447 C */
+  --brand-gray: #6d6d6d; /* Pantone 4292 C */
+  --brand-gray-light: #bcbcbc; /* Pantone Gris Frío 4 C */
+  --brand-white: #ffffff;
+
+  /*
+   * AUROS × PAPELSA — tema oscuro. La profundidad sale de una pila de superficies
+   * derivada del turquesa PAPELSA mezclado con negro (no de sombras).
+   */
+  --depth: #000000; /* solo componente de mezcla, nunca color visible por sí mismo */
+  --surface-recessed: color-mix(in oklab, var(--brand-teal) 22%, var(--depth));
+  --background: color-mix(in oklab, var(--brand-teal) 30%, var(--depth)); /* canvas */
+  --surface: color-mix(in oklab, var(--brand-teal) 40%, var(--depth)); /* raised */
+  --surface-hover: color-mix(in oklab, var(--brand-teal) 47%, var(--depth));
+  --surface-muted: color-mix(in oklab, var(--brand-teal) 52%, var(--depth));
 
   /* Texto */
-  --foreground: #171a21;
-  --muted-foreground: #667085;
-  --subtle-foreground: #98a2b3;
+  --foreground: var(--brand-white);
+  --muted-foreground: var(--brand-gray-light);
+  --subtle-foreground: color-mix(in oklab, var(--brand-gray-light) 78%, var(--brand-gray));
 
-  /* Bordes */
-  --border: #e3e7ee;
-  --border-strong: #d0d5dd;
-  --input: #e3e7ee;
+  /* Bordes: blanco de baja opacidad */
+  --border: rgb(255 255 255 / 0.1);
+  --border-strong: rgb(255 255 255 / 0.2);
+  --input: rgb(255 255 255 / 0.14);
 
-  /* Marca y semánticos */
-  --primary: #5b5ce2;
-  --primary-hover: #4f50d6;
-  --primary-foreground: #ffffff;
-  --primary-soft: #eeeefd;
+  /* Marca */
+  --primary: var(--brand-teal);
+  --primary-hover: color-mix(in oklab, var(--brand-teal) 70%, var(--brand-teal-2));
+  --primary-foreground: var(--brand-white);
+  --primary-soft: color-mix(in oklab, var(--brand-teal) 62%, var(--depth));
+  /* Turquesa legible como texto sobre superficies oscuras */
+  --primary-text: color-mix(in oklab, var(--brand-teal-2) 45%, var(--brand-white));
+  --brand-teal-2-soft: color-mix(in oklab, var(--brand-teal-2) 30%, var(--depth));
+  /* Acento vivo: foco, selección, indicadores */
+  --accent-live: var(--brand-green);
+
+  /* Semánticos operacionales: se conservan; solo se adaptan tintes y texto al fondo oscuro */
   --info: #2e90fa;
-  --info-soft: #eaf4ff;
   --success: #12b76a;
-  --success-soft: #e8f8f0;
   --warning: #f79009;
-  --warning-soft: #fef4e6;
   --danger: #f04438;
-  --danger-soft: #feeceb;
+  --info-soft: color-mix(in srgb, var(--info) 16%, transparent);
+  --success-soft: color-mix(in srgb, var(--success) 16%, transparent);
+  --warning-soft: color-mix(in srgb, var(--warning) 16%, transparent);
+  --danger-soft: color-mix(in srgb, var(--danger) 16%, transparent);
+  --info-text: color-mix(in oklab, var(--info) 55%, var(--brand-white));
+  --success-text: color-mix(in oklab, var(--success) 55%, var(--brand-white));
+  --warning-text: color-mix(in oklab, var(--warning) 55%, var(--brand-white));
+  --danger-text: color-mix(in oklab, var(--danger) 55%, var(--brand-white));
 
   /* Aliases shadcn */
   --card: var(--surface);
@@ -48,21 +78,70 @@
   --accent: var(--surface-muted);
   --accent-foreground: var(--foreground);
   --destructive: var(--danger);
-  --ring: var(--primary);
+  --ring: var(--accent-live);
 
-  /* Radios */
-  --radius: 0.625rem; /* 10px */
+  /* Radios (Auros: 6 px controles, 16 px paneles; tarjetas OT 8 px por densidad) */
+  --radius: 0.5rem; /* 8px */
 
-  /* Sombras suaves */
-  --shadow-xs: 0 1px 2px rgb(16 24 40 / 0.04);
-  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.05), 0 1px 3px rgb(16 24 40 / 0.04);
-  --shadow-raised: 0 4px 12px -2px rgb(16 24 40 / 0.08), 0 2px 4px -2px rgb(16 24 40 / 0.04);
-  --shadow-overlay: 0 24px 48px -12px rgb(16 24 40 / 0.18), 0 4px 12px -4px rgb(16 24 40 / 0.08);
+  /* Capas y detalles que cambian por tema */
+  --scrim: color-mix(in oklab, var(--surface-recessed) 80%, transparent);
+  --stripe: rgb(255 255 255 / 0.025);
+  --hero-glow: color-mix(in oklab, var(--brand-teal) 50%, transparent);
+  /* Énfasis del copy beta: en oscuro el verde exacto, sin subrayado */
+  --emphasis-text: var(--brand-green);
+  --emphasis-mark: transparent;
+
+  /* Sin sombras: la jerarquía se expresa con superficies */
+  --shadow-xs: none;
+  --shadow-card: none;
+  --shadow-raised: none;
+  --shadow-overlay: none;
 
   /* Movimiento */
   --duration-hover: 140ms;
   --duration-panel: 200ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * AUROS × PAPELSA LIGHT — misma arquitectura de superficies (recessed / canvas /
+ * raised) con blancos y grises corporativos. Solo se redefinen tokens.
+ */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --surface-recessed: color-mix(in oklab, var(--brand-gray-light) 22%, var(--brand-white));
+  --background: color-mix(in oklab, var(--brand-gray-light) 7%, var(--brand-white)); /* canvas */
+  --surface: var(--brand-white); /* raised: blanco separado por borde */
+  --surface-hover: color-mix(in oklab, var(--brand-teal) 5%, var(--brand-white));
+  --surface-muted: color-mix(in oklab, var(--brand-gray-light) 16%, var(--brand-white));
+
+  --foreground: var(--brand-graphite);
+  --muted-foreground: color-mix(in oklab, var(--brand-gray) 70%, var(--brand-graphite));
+  --subtle-foreground: var(--brand-gray);
+
+  --border: color-mix(in oklab, var(--brand-gray-light) 50%, var(--brand-white));
+  --border-strong: var(--brand-gray-light);
+  --input: color-mix(in oklab, var(--brand-gray-light) 75%, var(--brand-white));
+
+  --primary-hover: color-mix(in oklab, var(--brand-teal) 82%, var(--brand-graphite));
+  --primary-soft: color-mix(in oklab, var(--brand-teal) 8%, var(--brand-white));
+  --primary-text: var(--brand-teal);
+  --brand-teal-2-soft: color-mix(in oklab, var(--brand-teal-2) 14%, var(--brand-white));
+  /* El verde sobre blanco no llega a 3:1: el foco usa el turquesa; el verde sigue como acento */
+  --ring: var(--brand-teal);
+
+  --info-text: color-mix(in oklab, var(--info) 70%, var(--depth));
+  --success-text: color-mix(in oklab, var(--success) 70%, var(--depth));
+  --warning-text: color-mix(in oklab, var(--warning) 70%, var(--depth));
+  --danger-text: color-mix(in oklab, var(--danger) 70%, var(--depth));
+
+  --scrim: rgb(51 51 51 / 0.4);
+  --stripe: rgb(51 51 51 / 0.035);
+  --hero-glow: color-mix(in oklab, var(--brand-teal) 14%, transparent);
+  /* Texto derivado del verde con contraste suficiente + subrayado en el #A9C23F exacto */
+  --emphasis-text: color-mix(in oklab, var(--brand-green) 50%, var(--brand-graphite));
+  --emphasis-mark: var(--brand-green);
 }
 
 @theme inline {
@@ -99,15 +178,32 @@
   --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-green: var(--brand-green);
+  --color-brand-teal-2: var(--brand-teal-2);
+  --color-brand-teal-2-soft: var(--brand-teal-2-soft);
+  --color-brand-graphite: var(--brand-graphite);
+  --color-surface-recessed: var(--surface-recessed);
+  --color-primary-text: var(--primary-text);
+  --color-accent-live: var(--accent-live);
+  --color-info-text: var(--info-text);
+  --color-success-text: var(--success-text);
+  --color-warning-text: var(--warning-text);
+  --color-danger-text: var(--danger-text);
+  --color-scrim: var(--scrim);
+  --color-emphasis-text: var(--emphasis-text);
+  --color-emphasis-mark: var(--emphasis-mark);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Comfortaa: identidad y encabezados. Futura queda pendiente de fuente licenciada. */
+  --font-brand: var(--font-comfortaa), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  --radius-sm: calc(var(--radius) - 4px); /* 6px */
-  --radius-md: calc(var(--radius) - 2px); /* 8px */
-  --radius-lg: var(--radius); /* 10px */
-  --radius-xl: calc(var(--radius) + 2px); /* 12px */
-  --radius-2xl: calc(var(--radius) + 6px); /* 16px — overlays */
+  --radius-sm: calc(var(--radius) - 4px); /* 4px */
+  --radius-md: calc(var(--radius) - 2px); /* 6px — controles */
+  --radius-lg: var(--radius); /* 8px — tarjetas OT, chips */
+  --radius-xl: calc(var(--radius) + 4px); /* 12px — popovers */
+  --radius-2xl: calc(var(--radius) + 8px); /* 16px — paneles y diálogos */
 
   --shadow-xs: var(--shadow-xs);
   --shadow-card: var(--shadow-card);
@@ -157,6 +253,10 @@
     border-color: var(--border);
   }
 
+  html {
+    color-scheme: dark;
+  }
+
   html,
   body {
     height: 100%;
@@ -187,17 +287,68 @@
     scrollbar-color: var(--border-strong) transparent;
   }
 
+  /* Label técnico (Auros): mayúsculas con tracking amplio */
+  .label-tech {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--subtle-foreground);
+  }
+
   /* Rayado sutil para días de fin de semana */
   .bg-weekend {
     background-image: repeating-linear-gradient(
       -45deg,
       transparent 0 6px,
-      rgb(16 24 40 / 0.018) 6px 12px
+      var(--stripe) 6px 12px
     );
   }
 }
 
+/* Bienvenida beta: aparición escalonada del copy (tiempos en WINDMILL_MOTION) */
+.hero-reveal {
+  opacity: 0;
+  animation-name: hero-reveal;
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: forwards;
+}
+
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Las piezas del símbolo arrancan ocultas; el ensamblaje las revela */
+.windmill-piece {
+  opacity: 0;
+}
+
+/* Halo atmosférico detrás del molinillo (derivado del turquesa PAPELSA) */
+.brand-hero-glow {
+  background: radial-gradient(
+    closest-side,
+    var(--hero-glow) 0,
+    transparent 100%
+  );
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .hero-reveal {
+    animation: none;
+    opacity: 1;
+  }
+
+  .windmill-piece {
+    opacity: 1;
+  }
+
   *,
   *::before,
   *::after {

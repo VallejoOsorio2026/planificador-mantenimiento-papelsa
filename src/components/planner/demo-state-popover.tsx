@@ -1,8 +1,10 @@
 "use client";
 
-import { FlaskConical } from "lucide-react";
+import { FlaskConical, RotateCcw } from "lucide-react";
 
-import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+
+import { Popover, PopoverClose, PopoverContent, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type { DemoState } from "@/types/planner";
 
@@ -16,10 +18,18 @@ const OPTIONS: { value: DemoState; label: string; hint: string }[] = [
  * Indicador explícito de que la vista usa datos de demostración, con un
  * selector para revisar los estados visuales de Fase 1.
  */
-export function DemoStatePopover({ value, onChange }: { value: DemoState; onChange: (value: DemoState) => void }) {
+export function DemoStatePopover({
+  value,
+  onChange,
+  onReplayWelcome,
+}: {
+  value: DemoState;
+  onChange: (value: DemoState) => void;
+  onReplayWelcome: () => void;
+}) {
   return (
     <Popover>
-      <PopoverTrigger className="inline-flex h-6 items-center gap-1.5 rounded-full border border-warning/25 bg-warning-soft px-2.5 text-[11px] font-medium text-[#b54708] outline-none transition-colors duration-[var(--duration-hover)] hover:border-warning/50 focus-visible:ring-[3px] focus-visible:ring-warning/25">
+      <PopoverTrigger className="inline-flex h-6 items-center gap-1.5 rounded-full border border-warning/25 bg-warning-soft px-2.5 text-[11px] font-medium text-warning-text outline-none transition-colors duration-[var(--duration-hover)] hover:border-warning/50 focus-visible:ring-[3px] focus-visible:ring-warning/25">
         <FlaskConical className="size-3" aria-hidden />
         Datos mock
       </PopoverTrigger>
@@ -39,7 +49,7 @@ export function DemoStatePopover({ value, onChange }: { value: DemoState; onChan
                 aria-checked={selected}
                 onClick={() => onChange(opt.value)}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-lg border px-2.5 py-2 text-left outline-none transition-colors duration-[var(--duration-hover)] focus-visible:ring-[3px] focus-visible:ring-primary/20",
+                  "flex items-center gap-2.5 rounded-lg border px-2.5 py-2 text-left outline-none transition-colors duration-[var(--duration-hover)] focus-visible:ring-[3px] focus-visible:ring-ring/45",
                   selected ? "border-primary/40 bg-primary-soft" : "border-border hover:bg-surface-muted",
                 )}
               >
@@ -58,6 +68,13 @@ export function DemoStatePopover({ value, onChange }: { value: DemoState; onChan
               </button>
             );
           })}
+        </div>
+        {/* Solo durante la beta: facilita revisar la bienvenida sin recargar */}
+        <div className="mt-3 border-t border-border pt-3">
+          <PopoverClose render={<Button variant="outline" size="sm" className="w-full" onClick={onReplayWelcome} />}>
+            <RotateCcw />
+            Repetir bienvenida
+          </PopoverClose>
         </div>
       </PopoverContent>
     </Popover>

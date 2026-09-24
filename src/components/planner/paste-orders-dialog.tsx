@@ -35,7 +35,7 @@ export function PasteOrdersDialog({ open, onOpenChange }: { open: boolean; onOpe
       <DialogContent className="max-w-[760px]">
         <DialogHeader>
           <div className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary-soft text-primary">
+            <span className="flex size-8 items-center justify-center rounded-lg bg-primary-soft text-primary-text">
               <ClipboardPaste className="size-4" aria-hidden />
             </span>
             <div>
@@ -69,7 +69,7 @@ function PasteBody() {
       <ol className="grid grid-cols-3 gap-3">
         {STEPS.map((step, i) => (
           <li key={step.title} className="flex gap-2.5 rounded-lg border border-border bg-surface-muted/50 p-3">
-            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-surface text-[11px] font-semibold text-primary ring-1 ring-border">
+            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-surface text-[11px] font-semibold text-primary-text ring-1 ring-border">
               {i + 1}
             </span>
             <span className="min-w-0">
@@ -99,7 +99,7 @@ function PasteBody() {
           />
           {text.length === 0 ? (
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-              <span className="flex size-10 items-center justify-center rounded-xl border border-border bg-surface shadow-card">
+              <span className="flex size-10 items-center justify-center rounded-md border border-border bg-surface-muted">
                 <ClipboardPaste className="size-5 text-muted-foreground" aria-hidden />
               </span>
               <p className="text-[13px] font-medium text-foreground">Pega aquí la tabla de órdenes</p>

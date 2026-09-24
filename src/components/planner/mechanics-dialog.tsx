@@ -27,7 +27,7 @@ export function MechanicsDialog({ open, onOpenChange }: { open: boolean; onOpenC
       <DialogContent className="max-w-[720px]">
         <DialogHeader>
           <div className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary-soft text-primary">
+            <span className="flex size-8 items-center justify-center rounded-lg bg-primary-soft text-primary-text">
               <Users className="size-4" aria-hidden />
             </span>
             <div>

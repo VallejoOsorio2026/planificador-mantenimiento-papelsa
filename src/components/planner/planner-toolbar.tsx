@@ -1,14 +1,16 @@
 "use client";
 
-import { CalendarDays, ChevronLeft, ChevronRight, ClipboardPaste, Users, Wrench } from "lucide-react";
+import Image from "next/image";
+import { CalendarDays, ChevronLeft, ChevronRight, ClipboardPaste, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { formatWeekRange, isoWeekNumber } from "@/lib/dates";
-import type { DemoState, PlannerFilters } from "@/types/planner";
+import type { DemoState, PlannerFilters, ThemeName } from "@/types/planner";
 
 import { ChangesPopover } from "./changes-popover";
 import { DemoStatePopover } from "./demo-state-popover";
 import { FiltersPopover } from "./filters-popover";
+import { ThemeToggle } from "./theme-toggle";
 
 export function PlannerToolbar({
   weekStart,
@@ -22,6 +24,9 @@ export function PlannerToolbar({
   onDemoStateChange,
   onOpenPaste,
   onOpenMechanics,
+  onReplayWelcome,
+  theme,
+  onToggleTheme,
 }: {
   weekStart: Date | null;
   isCurrentWeek: boolean;
@@ -34,22 +39,34 @@ export function PlannerToolbar({
   onDemoStateChange: (value: DemoState) => void;
   onOpenPaste: () => void;
   onOpenMechanics: () => void;
+  onReplayWelcome: () => void;
+  theme: ThemeName;
+  onToggleTheme: () => void;
 }) {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border bg-surface px-4">
-      {/* Identidad */}
-      <div className="flex min-w-0 items-center gap-2.5">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary text-white shadow-xs">
-          <Wrench className="size-4" aria-hidden />
-        </span>
-        <div className="min-w-0 leading-tight">
-          <h1 className="truncate text-[13px] font-semibold tracking-[-0.01em] text-foreground">Planificador semanal</h1>
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b-2 border-brand-green bg-background px-3 whitespace-nowrap">
+      {/* Identidad PAPELSA: logotipo oficial según tema (vectores extraídos del manual, p.17) */}
+      <div className="flex shrink-0 items-center gap-2">
+        <Image
+          src={theme === "light" ? "/brand/papelsa-logo-color.svg" : "/brand/papelsa-logo-negative.svg"}
+          alt="PAPELSA"
+          width={170}
+          height={33}
+          loading="eager"
+          unoptimized
+          className="mx-1 h-auto w-[100px] shrink-0 select-none"
+          draggable={false}
+        />
+        <div className="h-7 w-px shrink-0 bg-border max-[1365px]:hidden" aria-hidden />
+        {/* Por debajo de 1366 px el logo identifica la app y se libera ancho para la toolbar */}
+        <div className="leading-tight max-[1365px]:sr-only">
+          <h1 className="font-brand text-[13px] font-semibold text-foreground">Planificador semanal</h1>
           <p className="truncate text-[11px] text-muted-foreground">Mantenimiento mecánico</p>
         </div>
-        <DemoStatePopover value={demoState} onChange={onDemoStateChange} />
+        <DemoStatePopover value={demoState} onChange={onDemoStateChange} onReplayWelcome={onReplayWelcome} />
       </div>
 
-      <div className="mx-1 h-6 w-px bg-border" aria-hidden />
+      <div className="h-6 w-px bg-border" aria-hidden />
 
       {/* Navegación semanal */}
       <nav aria-label="Navegación de semanas" className="flex items-center gap-1.5">
@@ -82,6 +99,7 @@ export function PlannerToolbar({
       <div className="flex items-center gap-1">
         <FiltersPopover filters={filters} onChange={onFiltersChange} />
         <ChangesPopover />
+        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>
 
       <div className="h-6 w-px bg-border" aria-hidden />

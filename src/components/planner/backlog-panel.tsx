@@ -59,11 +59,11 @@ export function BacklogPanel({
     <aside aria-label="Backlog de órdenes" className="flex w-[296px] shrink-0 flex-col border-r border-border bg-surface">
       <div className="flex flex-col gap-3 border-b border-border px-4 pt-4 pb-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-[13px] font-semibold text-foreground">Backlog</h2>
+          <h2 className="font-brand text-[14px] font-semibold text-foreground">Backlog</h2>
           <span className="rounded-full bg-surface-muted px-1.5 text-[11px] font-medium text-muted-foreground tabular-nums">
             {loading ? "–" : totalCount}
           </span>
-          <span className="ml-auto text-[11px] text-subtle-foreground">Sin programar</span>
+          <span className="label-tech ml-auto">Sin programar</span>
         </div>
         <div className="relative">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-subtle-foreground" aria-hidden />
@@ -110,7 +110,7 @@ export function BacklogPanel({
         </div>
       </div>
 
-      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto bg-background/60 px-3 py-3">
+      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto bg-surface-recessed px-3 py-3">
         {loading ? (
           <div className="flex flex-col gap-2" aria-busy="true" aria-label="Cargando backlog">
             {Array.from({ length: 6 }, (_, i) => (
@@ -190,9 +190,9 @@ export function BacklogPanel({
 
 function chipClass(active: boolean) {
   return cn(
-    "inline-flex h-6 items-center gap-1 rounded-md border px-2 text-[11px] font-medium outline-none transition-colors duration-[var(--duration-hover)] focus-visible:ring-[3px] focus-visible:ring-primary/20",
+    "inline-flex h-6 items-center gap-1 rounded-md border px-2 text-[11px] font-medium outline-none transition-colors duration-[var(--duration-hover)] focus-visible:ring-[3px] focus-visible:ring-ring/45",
     active
-      ? "border-primary/30 bg-primary-soft text-primary"
+      ? "border-primary/30 bg-primary-soft text-primary-text"
       : "border-border bg-surface text-muted-foreground hover:border-border-strong hover:text-foreground",
   );
 }

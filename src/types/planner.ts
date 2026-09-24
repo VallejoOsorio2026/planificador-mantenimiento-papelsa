@@ -69,3 +69,6 @@ export interface PlannerFilters {
 
 /** Estado de demostración para revisar estados visuales en Fase 1. */
 export type DemoState = "datos" | "cargando" | "vacio";
+
+/** Tema de presentación (sin persistencia). */
+export type ThemeName = "dark" | "light";
