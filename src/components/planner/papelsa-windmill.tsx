@@ -11,7 +11,7 @@ import {
   easeOutCubic,
   particlePalette,
   progress,
-  windAngle,
+  windVelocity,
 } from "@/lib/windmill-motion";
 import type { ThemeName } from "@/types/planner";
 
@@ -24,7 +24,7 @@ const CANVAS_FACTOR = WINDMILL_MOTION.particles.spawnRadius[1] * 2 + 0.2;
 /**
  * Símbolo PAPELSA que se ensambla desde partículas y gira como un molinillo
  * empujado por el viento. Versión oficial según tema: negativa (p.17) en oscuro,
- * principal a color (p.7) en claro. Cada ráfaga termina en la orientación oficial (0°).
+ * principal a color (p.7) en claro. Giro residual continuo con ráfagas ocasionales.
  *
  * - Cambiar `theme` solo cambia colores: no reinicia la animación ni el loop.
  * - `animate=false` (reduced motion): símbolo estático completo, sin lienzo ni giro.
@@ -87,6 +87,7 @@ export function PapelsaWindmill({
 
     const { pieces: pc, particles } = WINDMILL_MOTION;
     let t = 0;
+    let angle = 0;
     let last = 0;
     let raf = 0;
     let particlesVisible = true;
@@ -95,8 +96,6 @@ export function PapelsaWindmill({
       const dt = last ? Math.min((now - last) / 1000, 1 / 20) : 0;
       last = now;
       t += dt;
-      // Ángulo como función pura del tiempo: fuera de una ráfaga es exactamente 0.
-      const angle = windAngle(t);
 
       // Partículas
       if (particlesVisible && ctx && field) {
@@ -127,8 +126,8 @@ export function PapelsaWindmill({
       });
 
       // Giro de molinillo sobre el centro exacto del símbolo.
-      rotor.setAttribute("transform", angle === 0 ? "" : `rotate(${angle} ${CX} ${CY})`);
-      rotor.dataset.angle = String(angle);
+      angle = (angle + windVelocity(t) * dt) % 360;
+      rotor.setAttribute("transform", `rotate(${angle} ${CX} ${CY})`);
 
       raf = requestAnimationFrame(frame);
     };

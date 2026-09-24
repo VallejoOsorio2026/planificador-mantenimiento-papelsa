@@ -39,21 +39,22 @@ export const WINDMILL_MOTION = {
     duration: 0.6,
     ctaDelay: 0.75,
   },
-  /**
-   * Ráfagas: cada una recorre exactamente `turns` vueltas completas con un perfil
-   * de impulso + fricción y termina con velocidad y aceleración nulas, así que el
-   * símbolo siempre reposa en su orientación oficial (0°) sin salto final.
-   */
   gust: {
     start: 1.8,
-    duration: 1.6,
-    turns: 1,
+    /** Velocidad angular de la ráfaga principal, en °/s. */
+    amplitude: 1100,
+    rise: 0.15,
+    decay: 0.5,
   },
   idle: {
-    /** Separación entre inicios de ráfaga, ciclo fijo (sin aleatoriedad). */
-    gustEvery: [12, 15, 13, 16],
-    duration: 4,
-    turns: 1,
+    start: 2.8,
+    /** Giro residual casi imperceptible, en °/s. */
+    speed: 6,
+    /** Intervalos entre ráfagas suaves (ciclo fijo, sin aleatoriedad compleja). */
+    gustEvery: [6.5, 8, 7, 9],
+    amplitude: 110,
+    rise: 0.4,
+    decay: 1.1,
   },
   exit: 0.3,
 } as const;
@@ -65,32 +66,27 @@ export const progress = (t: number, [a, b]: Range) => clamp01((t - a) / (b - a))
 export const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
 export const easeInOutCubic = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - (-2 * p + 2) ** 3 / 2);
 
-/**
- * Avance normalizado de una ráfaga (0 → 1). Es la integral normalizada de la
- * velocidad v(p) ∝ p·(1−p)³: arranque suave, pico hacia el 25 % (impulso) y
- * fricción larga; en p = 1 velocidad y aceleración valen 0.
- */
-export const gustProgress = (p: number) => {
-  const x = clamp01(p);
-  return x * x * (10 - 20 * x + 15 * x * x - 4 * x * x * x);
-};
+/** Ráfaga de viento: sube rápido y se disipa por fricción. Devuelve °/s. */
+function gustVelocity(u: number, amplitude: number, rise: number, decay: number): number {
+  if (u <= 0) return 0;
+  return amplitude * (1 - Math.exp(-u / rise)) * Math.exp(-u / decay);
+}
 
-/**
- * Ángulo del molinillo (grados, 0 ≤ a < 360) en el instante `t` de la bienvenida.
- * Función pura del tiempo: fuera de una ráfaga devuelve exactamente 0.
- */
-export function windAngle(t: number): number {
+/** Velocidad angular del molinillo (°/s) en el instante `t` de la bienvenida. */
+export function windVelocity(t: number): number {
   const { gust, idle } = WINDMILL_MOTION;
-  let start: number = gust.start;
-  let duration: number = gust.duration;
-  let turns: number = gust.turns;
-  for (let i = 0; t >= start + duration; i++) {
-    start += idle.gustEvery[i % idle.gustEvery.length];
-    duration = idle.duration;
-    turns = idle.turns;
+  let v = gustVelocity(t - gust.start, gust.amplitude, gust.rise, gust.decay);
+  if (t > idle.start) {
+    v += idle.speed * easeOutCubic(clamp01(t - idle.start));
+    // Ráfagas suaves en un ciclo fijo de intervalos.
+    let at = idle.start;
+    for (let i = 0; at < t; i++) {
+      at += idle.gustEvery[i % idle.gustEvery.length];
+      const u = t - at;
+      if (u > 0 && u < idle.decay * 6) v += gustVelocity(u, idle.amplitude, idle.rise, idle.decay);
+    }
   }
-  if (t <= start) return 0;
-  return (360 * turns * gustProgress((t - start) / duration)) % 360;
+  return v;
 }
 
 /** PRNG determinista (mulberry32) para que el ensamblaje sea igual en cada visita. */
