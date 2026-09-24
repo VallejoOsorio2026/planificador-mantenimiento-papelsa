@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${inter.variable} ${comfortaa.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="es" data-theme="dark" className={`${inter.variable} ${comfortaa.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="h-full overflow-hidden">{children}</body>
     </html>
   );

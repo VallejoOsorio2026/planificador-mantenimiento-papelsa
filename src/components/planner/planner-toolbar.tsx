@@ -5,11 +5,12 @@ import { CalendarDays, ChevronLeft, ChevronRight, ClipboardPaste, Users } from "
 
 import { Button } from "@/components/ui/button";
 import { formatWeekRange, isoWeekNumber } from "@/lib/dates";
-import type { DemoState, PlannerFilters } from "@/types/planner";
+import type { DemoState, PlannerFilters, ThemeName } from "@/types/planner";
 
 import { ChangesPopover } from "./changes-popover";
 import { DemoStatePopover } from "./demo-state-popover";
 import { FiltersPopover } from "./filters-popover";
+import { ThemeToggle } from "./theme-toggle";
 
 export function PlannerToolbar({
   weekStart,
@@ -24,6 +25,8 @@ export function PlannerToolbar({
   onOpenPaste,
   onOpenMechanics,
   onReplayWelcome,
+  theme,
+  onToggleTheme,
 }: {
   weekStart: Date | null;
   isCurrentWeek: boolean;
@@ -37,19 +40,21 @@ export function PlannerToolbar({
   onOpenPaste: () => void;
   onOpenMechanics: () => void;
   onReplayWelcome: () => void;
+  theme: ThemeName;
+  onToggleTheme: () => void;
 }) {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-brand-green bg-background px-3 whitespace-nowrap">
-      {/* Identidad PAPELSA: logotipo negativo oficial (vector extraído del manual, p.17) */}
-      <div className="flex shrink-0 items-center gap-2.5">
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b-2 border-brand-green bg-background px-3 whitespace-nowrap">
+      {/* Identidad PAPELSA: logotipo oficial según tema (vectores extraídos del manual, p.17) */}
+      <div className="flex shrink-0 items-center gap-2">
         <Image
-          src="/brand/papelsa-logo-negative.svg"
+          src={theme === "light" ? "/brand/papelsa-logo-color.svg" : "/brand/papelsa-logo-negative.svg"}
           alt="PAPELSA"
           width={170}
           height={33}
           loading="eager"
           unoptimized
-          className="mx-1 h-auto w-[106px] shrink-0 select-none"
+          className="mx-1 h-auto w-[100px] shrink-0 select-none"
           draggable={false}
         />
         <div className="h-7 w-px shrink-0 bg-border max-[1365px]:hidden" aria-hidden />
@@ -61,7 +66,7 @@ export function PlannerToolbar({
         <DemoStatePopover value={demoState} onChange={onDemoStateChange} onReplayWelcome={onReplayWelcome} />
       </div>
 
-      <div className="mx-1 h-6 w-px bg-border" aria-hidden />
+      <div className="h-6 w-px bg-border" aria-hidden />
 
       {/* Navegación semanal */}
       <nav aria-label="Navegación de semanas" className="flex items-center gap-1.5">
@@ -94,6 +99,7 @@ export function PlannerToolbar({
       <div className="flex items-center gap-1">
         <FiltersPopover filters={filters} onChange={onFiltersChange} />
         <ChangesPopover />
+        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>
 
       <div className="h-6 w-px bg-border" aria-hidden />

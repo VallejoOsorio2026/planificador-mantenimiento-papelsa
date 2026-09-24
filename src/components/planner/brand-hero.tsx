@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { BETA_WELCOME_COPY } from "@/lib/brand-copy";
 import { cn } from "@/lib/utils";
 import { WINDMILL_MOTION } from "@/lib/windmill-motion";
+import type { ThemeName } from "@/types/planner";
 
 import { PapelsaWindmill } from "./papelsa-windmill";
+import { ThemeToggle } from "./theme-toggle";
 
 const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
 function subscribeReduced(cb: () => void) {
@@ -29,7 +31,15 @@ function reveal(delay: number) {
  * Bienvenida beta superpuesta al planificador (que ya está cargado debajo).
  * Se cierra con el CTA, Enter o Esc en cualquier momento; no espera a la animación.
  */
-export function BrandHero({ onClose }: { onClose: () => void }) {
+export function BrandHero({
+  theme,
+  onToggleTheme,
+  onClose,
+}: {
+  theme: ThemeName;
+  onToggleTheme: () => void;
+  onClose: () => void;
+}) {
   const reduced = useSyncExternalStore(subscribeReduced, getReduced, getReducedServer);
   const [leaving, setLeaving] = useState(false);
   const leavingRef = useRef(false);
@@ -48,6 +58,7 @@ export function BrandHero({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      // Enter y Esc cierran siempre (también con el foco en el selector de tema).
       if (e.key === "Escape" || e.key === "Enter") {
         e.preventDefault();
         close();
@@ -74,10 +85,18 @@ export function BrandHero({ onClose }: { onClose: () => void }) {
       )}
       style={{ transitionDuration: `${WINDMILL_MOTION.exit}s` }}
     >
+      {/* El planificador queda inert debajo: el selector de tema también vive aquí */}
+      <ThemeToggle theme={theme} onToggle={onToggleTheme} className="absolute top-3 right-3" />
+
       <div className="relative flex max-w-[880px] flex-col items-center px-6 text-center">
         <div className="relative">
           <div aria-hidden className="brand-hero-glow pointer-events-none absolute -inset-[140%] rounded-full" />
-          <PapelsaWindmill theme="dark" animate={!reduced} active={!leaving} className="w-[clamp(128px,23vh,200px)]" />
+          <PapelsaWindmill
+            theme={theme}
+            animate={!reduced}
+            active={!leaving}
+            className="w-[clamp(128px,23vh,200px)]"
+          />
         </div>
 
         <p className="label-tech hero-reveal mt-10 text-muted-foreground" style={reveal(copy.start - 0.1)}>
@@ -96,7 +115,7 @@ export function BrandHero({ onClose }: { onClose: () => void }) {
             </span>
           ))}
           <span
-            className="hero-reveal inline-block tracking-[0.08em] text-brand-green"
+            className="hero-reveal inline-block tracking-[0.08em] text-emphasis-text underline decoration-emphasis-mark decoration-[3px] underline-offset-[7px]"
             style={reveal(wordDelay(before.length))}
           >
             {headline.emphasis}

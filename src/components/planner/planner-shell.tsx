@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 import { addDays, startOfWeek } from "@/lib/dates";
 import { MOCK_ASSIGNMENTS, MOCK_MECHANICS, MOCK_ORDERS } from "@/lib/mock-data";
 import { PRIORITY_ORDER } from "@/lib/planner-config";
-import type { DemoState, PlannerFilters, WorkOrder } from "@/types/planner";
+import type { DemoState, PlannerFilters, ThemeName, WorkOrder } from "@/types/planner";
 
 import { BacklogPanel } from "./backlog-panel";
 import { BrandHero } from "./brand-hero";
@@ -51,6 +51,13 @@ export function PlannerShell() {
   const [mechanicsOpen, setMechanicsOpen] = useState(false);
   // Bienvenida beta: se muestra en cada carga (sin persistencia); `key` permite repetirla.
   const [welcome, setWelcome] = useState({ open: true, key: 0 });
+  // Tema: estado React único (oscuro por defecto, sin persistencia). Vive en <html>
+  // para que diálogos y popovers en portal hereden los tokens.
+  const [theme, setTheme] = useState<ThemeName>("dark");
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   const loading = today === null || demoState === "cargando";
   const empty = demoState === "vacio";
@@ -91,6 +98,7 @@ export function PlannerShell() {
 
   const closeInspector = useCallback(() => setSelectedOrderId(null), []);
   const closeWelcome = useCallback(() => setWelcome((w) => ({ ...w, open: false })), []);
+  const toggleTheme = useCallback(() => setTheme((t) => (t === "dark" ? "light" : "dark")), []);
   const toggleSelect = useCallback(
     (id: string) => setSelectedOrderId((current) => (current === id ? null : id)),
     [],
@@ -112,6 +120,8 @@ export function PlannerShell() {
           onOpenPaste={() => setPasteOpen(true)}
           onOpenMechanics={() => setMechanicsOpen(true)}
           onReplayWelcome={() => setWelcome((w) => ({ open: true, key: w.key + 1 }))}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
 
         <div className="flex min-h-0 flex-1">
@@ -158,7 +168,7 @@ export function PlannerShell() {
         <MechanicsDialog open={mechanicsOpen} onOpenChange={setMechanicsOpen} />
       </div>
 
-      {welcome.open ? <BrandHero key={welcome.key} onClose={closeWelcome} /> : null}
+      {welcome.open ? <BrandHero key={welcome.key} theme={theme} onToggleTheme={toggleTheme} onClose={closeWelcome} /> : null}
     </>
   );
 }

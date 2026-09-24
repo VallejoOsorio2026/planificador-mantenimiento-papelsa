@@ -6,7 +6,7 @@ const TONES = [
   "bg-success-soft text-success-text",
   "bg-warning-soft text-warning-text",
   "bg-surface-muted text-foreground",
-  "bg-brand-green/15 text-brand-green",
+  "bg-brand-green/15 text-emphasis-text",
 ];
 
 function initials(name: string): string {

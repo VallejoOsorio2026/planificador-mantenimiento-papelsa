@@ -13,7 +13,7 @@ const DialogClose = DialogPrimitive.Close;
 function DialogContent({ className, children, ...props }: DialogPrimitive.Popup.Props) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-surface-recessed/80 transition-opacity duration-[var(--duration-panel)] data-ending-style:opacity-0 data-starting-style:opacity-0" />
+      <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-scrim transition-opacity duration-[var(--duration-panel)] data-ending-style:opacity-0 data-starting-style:opacity-0" />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
